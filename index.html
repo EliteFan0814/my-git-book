@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .img-wrap {
+      display: flex;
+    }
+
+    img {
+      border: 1px solid #ccc;
+      width: 300px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="img-wrap">
+    <img src="https://tenfei05.cfp.cn/creative/vcg/veer/1600water/veer-164825979.jpg" alt="通过src加载">
+    <img src="https://s2.loli.net/2022/02/17/TLEhJ1H3fDnP2x6.png" crossorigin>
+    <img src="" class="after-processing">
+  </div>
+  <script>
+    let image = undefined
+    let imageDataUrl = undefined
+    // 图片转换为base64格式
+    function getBase64Image(imgUrl) {
+      image = new Image();
+      image.src = imgUrl
+      // 如果不设置crossorigin 则将image传入canvas则会报
+      // Tainted canvases may not be exported.(受污染的画布可能无法导出)错误
+      image.crossOrigin = "Anonymous";
+      image.addEventListener("load", imageReceived, false);
+      image.onerror = function (e) {
+        console.log(e)
+      }
+    }
+    function imageReceived() {
+      let canvas = document.createElement("canvas");
+      let ctx = canvas.getContext("2d");
+      canvas.width = image.width;
+      canvas.height = image.height;
+      ctx.drawImage(image, 0, 0, image.width, image.height);
+      imageDataUrl = canvas.toDataURL("image/png"); // 可选其他值 image/jpeg
+      let afterProcessing = document.getElementsByClassName("after-processing")
+      afterProcessing[0].src = imageDataUrl
+    }
+    getBase64Image("https://s2.loli.net/2022/02/17/xF4DmVhKZI9ELaj.png")
+  </script>
+</body>
+
+</html>
